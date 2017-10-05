@@ -1,0 +1,11 @@
+{
+  "name": "hyperapp-term",
+  "main": "index.js",
+  "author": "Swizz",
+  "license": "MIT",
+  "dependencies": {
+    "@std/esm": "^0.11.2",
+    "hyperapp": "hyperapp/hyperapp#fragment-state",
+    "terminal-kit": "^1.13.12"
+  }
+}
