@@ -6,3 +6,5 @@ cd hyperapp-term-poc
 npm install
 node index.js
 ```
+
+![demo](https://i.imgur.com/mmFcJLF.png)
