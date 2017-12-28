@@ -1,20 +1,18 @@
 import { app } from 'hyperapp/src'
 
-import NodeDriver from './NodeDriver'
 import { ProgressBar } from './ui'
 
-const progressBar = ProgressBar()
+const state = {
+  title: 'Serious stuff in progress :',
+  progress: 0/100
+}
 
-const actions = app(NodeDriver)({
-  state: {
-    title: 'Serious stuff in progress :',
-    progress: 0/100
+const actions = {
+  start() {
+    return (state, actions) => actions.next()
   },
-  actions: {
-    start(state, actions) {
-      actions.next()
-    },
-    next(state, actions) {
+  next() {
+    return (state, actions) => {
       if (state.progress >= 1) {
         actions.stop()
         return false
@@ -23,19 +21,26 @@ const actions = app(NodeDriver)({
       return {
         progress: state.progress + Math.random()/10
       }
-    },
-    stop(state, actions) {
-      actions.exit(true)
     }
   },
-  view(state, actions) {
-    progressBar({
-      width: 80,
-      percent: true,
-      title: state.title,
-      progress: state.progress
-    })
+  stop() {
+    return (state, actions) => {
+      process.stdout.write('\n')
+      process.exit()
+    }
   }
-})
+}
 
-actions.start()
+const progressBar = ProgressBar()
+function view(state, actions) {
+  progressBar({
+    width: 80,
+    percent: true,
+    title: state.title,
+    progress: state.progress
+  })
+}
+
+const main = app(state, actions, view)
+
+main.start()
