@@ -1,46 +1,32 @@
 import { app } from 'hyperapp/src'
-
-import { ProgressBar } from './ui'
+import { terminal } from 'terminal-kit'
 
 const state = {
-  title: 'Serious stuff in progress :',
-  progress: 0/100
+  count: 0,
+  lastIndex: 0
 }
 
 const actions = {
-  start() {
-    return (state, actions) => actions.next()
-  },
-  next() {
-    return (state, actions) => {
-      if (state.progress >= 1) {
-        actions.stop()
-        return false
-      }
-      setTimeout(actions.next, 100+Math.random()*400)
-      return {
-        progress: state.progress + Math.random()/10
-      }
-    }
-  },
-  stop() {
-    return (state, actions) => {
-      process.stdout.write('\n')
-      process.exit()
-    }
+  up: () => state => ({ count: state.count + 1 }),
+  down: () => state => ({ count: state.count - 1 }),
+  reset: () => ({ count: 0 }),
+  quit: () => { process.exit() },
+  lastIndex: (lastIndex) => ({ lastIndex }),
+  select: ({ selectedIndex }) => (state, actions) => {
+    actions.lastIndex(selectedIndex)
+    return [actions.up, actions.down, actions.reset, actions.quit][selectedIndex]()
   }
 }
 
-const progressBar = ProgressBar()
-function view(state, actions) {
-  progressBar({
-    width: 80,
-    percent: true,
-    title: state.title,
-    progress: state.progress
-  })
+const view = (state, actions) => {
+  terminal.reset()
+  terminal.cyan(`The actual counter is : ${state.count}\n`)
+
+  terminal.singleColumnMenu(
+    ['up', 'down', 'reset', 'quit'],
+    { selectedIndex: state.lastIndex },
+    (err, res) => actions.select(res)
+  )
 }
 
 const main = app(state, actions, view)
-
-main.start()

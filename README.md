@@ -7,4 +7,4 @@ npm install
 node index.js
 ```
 
-![demo](https://i.imgur.com/mmFcJLF.png)
+![demo](https://i.imgur.com/ifcGOn2.png)
